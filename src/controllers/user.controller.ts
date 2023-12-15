@@ -115,11 +115,32 @@ export class UserController {
       },
     },
   })
+  /*
   async whoAmI(
     @inject(SecurityBindings.USER)
     currentUserProfile: UserProfile,
-  ): Promise<string> {
+  ): Promise<Object> {
     return currentUserProfile[securityId];
+  }
+  */
+  async whoAmI(
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
+  ): Promise<Object> {
+    // Obtenemos el ID del usuario actual
+    const userId = currentUserProfile[securityId];
+
+    // Suponiendo que tienes un modelo de usuario (User) con un campo 'rol' en tu base de datos
+    const user = await this.userRepository.findById(userId);
+
+    // Verificar si el usuario se encontró en la base de datos
+    if (user) {
+      // Devolvemos toda la información del usuario, incluido su rol
+      return user;
+    } else {
+      // Manejar el caso en que el usuario no se encuentre en la base de datos
+      throw new Error('Usuario no encontrado');
+    }
   }
 
   @post('/signup', {
